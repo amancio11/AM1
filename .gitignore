@@ -30,15 +30,15 @@ Thumbs.db
 *.ipynb_checkpoints/
 
 # Dataset & Generated Files
-dataset/images/
-dataset/glass_masks/
-dataset/dirt_maps/
-dataset/metadata/
-!dataset/.gitkeep
-!dataset/images/.gitkeep
-!dataset/glass_masks/.gitkeep
-!dataset/dirt_maps/.gitkeep
-!dataset/metadata/.gitkeep
+# dataset/images/
+# dataset/glass_masks/
+# dataset/dirt_maps/
+# dataset/metadata/
+# !dataset/.gitkeep
+# !dataset/images/.gitkeep
+# !dataset/glass_masks/.gitkeep
+# !dataset/dirt_maps/.gitkeep
+# !dataset/metadata/.gitkeep
 
 # Azure credentials — MAI committare
 azure/vm_config.env

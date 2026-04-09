@@ -49,6 +49,7 @@ bash azure/setup_vm.sh
 
 bash azure/run_generation.sh 0 50
 
+scp azureuseram@20.9.194.236:/*.png .
 
 ### Via Azure Cloud Shell
 
