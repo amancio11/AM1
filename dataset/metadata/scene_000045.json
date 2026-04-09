@@ -1,0 +1,393 @@
+{
+  "scene_id": 45,
+  "scene_name": "scene_000045",
+  "seed": 87,
+  "render_time_s": 3.86,
+  "building": {
+    "num_floors": 5,
+    "windows_per_floor": 6,
+    "floor_height": 3.8501503721395802,
+    "facade_width": 34.39687331182065,
+    "total_height": 19.2507518606979,
+    "facade_material": "metal_panel",
+    "windows": [
+      {
+        "floor": 0,
+        "window": 0,
+        "center_x": -12.961742001026934,
+        "center_z": 1.9250751860697901,
+        "width": 1.896004291054771,
+        "height": 1.8463072210053078,
+        "object_name": "Glass_Pane_F0_W0"
+      },
+      {
+        "floor": 0,
+        "window": 1,
+        "center_x": -7.77704520061616,
+        "center_z": 1.9250751860697901,
+        "width": 1.896004291054771,
+        "height": 1.8463072210053078,
+        "object_name": "Glass_Pane_F0_W1"
+      },
+      {
+        "floor": 0,
+        "window": 2,
+        "center_x": -2.5923484002053856,
+        "center_z": 1.9250751860697901,
+        "width": 1.896004291054771,
+        "height": 1.8463072210053078,
+        "object_name": "Glass_Pane_F0_W2"
+      },
+      {
+        "floor": 0,
+        "window": 3,
+        "center_x": 2.592348400205389,
+        "center_z": 1.9250751860697901,
+        "width": 1.896004291054771,
+        "height": 1.8463072210053078,
+        "object_name": "Glass_Pane_F0_W3"
+      },
+      {
+        "floor": 0,
+        "window": 4,
+        "center_x": 7.777045200616164,
+        "center_z": 1.9250751860697901,
+        "width": 1.896004291054771,
+        "height": 1.8463072210053078,
+        "object_name": "Glass_Pane_F0_W4"
+      },
+      {
+        "floor": 0,
+        "window": 5,
+        "center_x": 12.961742001026941,
+        "center_z": 1.9250751860697901,
+        "width": 1.896004291054771,
+        "height": 1.8463072210053078,
+        "object_name": "Glass_Pane_F0_W5"
+      },
+      {
+        "floor": 1,
+        "window": 0,
+        "center_x": -13.148372865827222,
+        "center_z": 5.77522555820937,
+        "width": 2.4185707124955704,
+        "height": 1.3667992087760166,
+        "object_name": "Glass_Pane_F1_W0"
+      },
+      {
+        "floor": 1,
+        "window": 1,
+        "center_x": -7.889023719496332,
+        "center_z": 5.77522555820937,
+        "width": 2.4185707124955704,
+        "height": 1.3667992087760166,
+        "object_name": "Glass_Pane_F1_W1"
+      },
+      {
+        "floor": 1,
+        "window": 2,
+        "center_x": -2.6296745731654427,
+        "center_z": 5.77522555820937,
+        "width": 2.4185707124955704,
+        "height": 1.3667992087760166,
+        "object_name": "Glass_Pane_F1_W2"
+      },
+      {
+        "floor": 1,
+        "window": 3,
+        "center_x": 2.6296745731654463,
+        "center_z": 5.77522555820937,
+        "width": 2.4185707124955704,
+        "height": 1.3667992087760166,
+        "object_name": "Glass_Pane_F1_W3"
+      },
+      {
+        "floor": 1,
+        "window": 4,
+        "center_x": 7.889023719496335,
+        "center_z": 5.77522555820937,
+        "width": 2.4185707124955704,
+        "height": 1.3667992087760166,
+        "object_name": "Glass_Pane_F1_W4"
+      },
+      {
+        "floor": 1,
+        "window": 5,
+        "center_x": 13.148372865827225,
+        "center_z": 5.77522555820937,
+        "width": 2.4185707124955704,
+        "height": 1.3667992087760166,
+        "object_name": "Glass_Pane_F1_W5"
+      },
+      {
+        "floor": 2,
+        "window": 0,
+        "center_x": -13.065037997163914,
+        "center_z": 9.625375930348952,
+        "width": 2.185233080238312,
+        "height": 1.694380616800003,
+        "object_name": "Glass_Pane_F2_W0"
+      },
+      {
+        "floor": 2,
+        "window": 1,
+        "center_x": -7.839022798298348,
+        "center_z": 9.625375930348952,
+        "width": 2.185233080238312,
+        "height": 1.694380616800003,
+        "object_name": "Glass_Pane_F2_W1"
+      },
+      {
+        "floor": 2,
+        "window": 2,
+        "center_x": -2.613007599432782,
+        "center_z": 9.625375930348952,
+        "width": 2.185233080238312,
+        "height": 1.694380616800003,
+        "object_name": "Glass_Pane_F2_W2"
+      },
+      {
+        "floor": 2,
+        "window": 3,
+        "center_x": 2.613007599432784,
+        "center_z": 9.625375930348952,
+        "width": 2.185233080238312,
+        "height": 1.694380616800003,
+        "object_name": "Glass_Pane_F2_W3"
+      },
+      {
+        "floor": 2,
+        "window": 4,
+        "center_x": 7.83902279829835,
+        "center_z": 9.625375930348952,
+        "width": 2.185233080238312,
+        "height": 1.694380616800003,
+        "object_name": "Glass_Pane_F2_W4"
+      },
+      {
+        "floor": 2,
+        "window": 5,
+        "center_x": 13.065037997163918,
+        "center_z": 9.625375930348952,
+        "width": 2.185233080238312,
+        "height": 1.694380616800003,
+        "object_name": "Glass_Pane_F2_W5"
+      },
+      {
+        "floor": 3,
+        "window": 0,
+        "center_x": -13.048865902712143,
+        "center_z": 13.47552630248853,
+        "width": 2.1399512157733542,
+        "height": 1.9626157140221843,
+        "object_name": "Glass_Pane_F3_W0"
+      },
+      {
+        "floor": 3,
+        "window": 1,
+        "center_x": -7.829319541627285,
+        "center_z": 13.47552630248853,
+        "width": 2.1399512157733542,
+        "height": 1.9626157140221843,
+        "object_name": "Glass_Pane_F3_W1"
+      },
+      {
+        "floor": 3,
+        "window": 2,
+        "center_x": -2.609773180542428,
+        "center_z": 13.47552630248853,
+        "width": 2.1399512157733542,
+        "height": 1.9626157140221843,
+        "object_name": "Glass_Pane_F3_W2"
+      },
+      {
+        "floor": 3,
+        "window": 3,
+        "center_x": 2.6097731805424296,
+        "center_z": 13.47552630248853,
+        "width": 2.1399512157733542,
+        "height": 1.9626157140221843,
+        "object_name": "Glass_Pane_F3_W3"
+      },
+      {
+        "floor": 3,
+        "window": 4,
+        "center_x": 7.829319541627287,
+        "center_z": 13.47552630248853,
+        "width": 2.1399512157733542,
+        "height": 1.9626157140221843,
+        "object_name": "Glass_Pane_F3_W4"
+      },
+      {
+        "floor": 3,
+        "window": 5,
+        "center_x": 13.048865902712146,
+        "center_z": 13.47552630248853,
+        "width": 2.1399512157733542,
+        "height": 1.9626157140221843,
+        "object_name": "Glass_Pane_F3_W5"
+      },
+      {
+        "floor": 4,
+        "window": 0,
+        "center_x": -12.719097014857992,
+        "center_z": 17.32567667462811,
+        "width": 1.2165983297817282,
+        "height": 1.4001099395101695,
+        "object_name": "Glass_Pane_F4_W0"
+      },
+      {
+        "floor": 4,
+        "window": 1,
+        "center_x": -7.631458208914795,
+        "center_z": 17.32567667462811,
+        "width": 1.2165983297817282,
+        "height": 1.4001099395101695,
+        "object_name": "Glass_Pane_F4_W1"
+      },
+      {
+        "floor": 4,
+        "window": 2,
+        "center_x": -2.5438194029715984,
+        "center_z": 17.32567667462811,
+        "width": 1.2165983297817282,
+        "height": 1.4001099395101695,
+        "object_name": "Glass_Pane_F4_W2"
+      },
+      {
+        "floor": 4,
+        "window": 3,
+        "center_x": 2.5438194029715984,
+        "center_z": 17.32567667462811,
+        "width": 1.2165983297817282,
+        "height": 1.4001099395101695,
+        "object_name": "Glass_Pane_F4_W3"
+      },
+      {
+        "floor": 4,
+        "window": 4,
+        "center_x": 7.631458208914795,
+        "center_z": 17.32567667462811,
+        "width": 1.2165983297817282,
+        "height": 1.4001099395101695,
+        "object_name": "Glass_Pane_F4_W4"
+      },
+      {
+        "floor": 4,
+        "window": 5,
+        "center_x": 12.719097014857992,
+        "center_z": 17.32567667462811,
+        "width": 1.2165983297817282,
+        "height": 1.4001099395101695,
+        "object_name": "Glass_Pane_F4_W5"
+      }
+    ],
+    "glass_object_names": [
+      "Glass_Pane_F0_W0",
+      "Glass_Pane_F0_W1",
+      "Glass_Pane_F0_W2",
+      "Glass_Pane_F0_W3",
+      "Glass_Pane_F0_W4",
+      "Glass_Pane_F0_W5",
+      "Glass_Pane_F1_W0",
+      "Glass_Pane_F1_W1",
+      "Glass_Pane_F1_W2",
+      "Glass_Pane_F1_W3",
+      "Glass_Pane_F1_W4",
+      "Glass_Pane_F1_W5",
+      "Glass_Pane_F2_W0",
+      "Glass_Pane_F2_W1",
+      "Glass_Pane_F2_W2",
+      "Glass_Pane_F2_W3",
+      "Glass_Pane_F2_W4",
+      "Glass_Pane_F2_W5",
+      "Glass_Pane_F3_W0",
+      "Glass_Pane_F3_W1",
+      "Glass_Pane_F3_W2",
+      "Glass_Pane_F3_W3",
+      "Glass_Pane_F3_W4",
+      "Glass_Pane_F3_W5",
+      "Glass_Pane_F4_W0",
+      "Glass_Pane_F4_W1",
+      "Glass_Pane_F4_W2",
+      "Glass_Pane_F4_W3",
+      "Glass_Pane_F4_W4",
+      "Glass_Pane_F4_W5"
+    ]
+  },
+  "camera": {
+    "camera_position": [
+      6.447868811135741,
+      -6.578342652181664,
+      22.518222759833293
+    ],
+    "camera_rotation_euler_deg": [
+      20.8492862473052,
+      1.9646133867270397,
+      -135.57386771014458
+    ],
+    "focal_length_mm": 81.65610681659507,
+    "sensor_width_mm": 35.0,
+    "drone_altitude_m": 22.518222759833293,
+    "drone_distance_m": 6.578342652181664,
+    "lateral_offset_m": 6.447868811135741,
+    "pitch_deg": -14.694884764009274,
+    "roll_deg": 1.9646133867270397,
+    "intrinsics": {
+      "fx": 2986.280477864048,
+      "fy": 2986.280477864048,
+      "cx": 640.0,
+      "cy": 360.0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "lighting": {
+    "weather": "clear",
+    "time_of_day": 12.654690549065673,
+    "sun_energy": 4.1709621290219125,
+    "sun_angle_deg": 44.392980928157854,
+    "sun_elevation_deg": 189.8203582359851,
+    "sun_azimuth_deg": 82.14371341121192,
+    "ambient_strength": 0.3451062481669947,
+    "turbidity": 5.945358260242164,
+    "fog_density": 0.0
+  },
+  "dirt_density_per_glass": {
+    "Glass_Pane_F0_W0": 0.11552376984078574,
+    "Glass_Pane_F0_W1": 0.3224625274191529,
+    "Glass_Pane_F0_W2": 0.0792652354713715,
+    "Glass_Pane_F0_W3": 0.07182940591365293,
+    "Glass_Pane_F0_W4": 0.8330461024770142,
+    "Glass_Pane_F0_W5": 0.26057219818284905,
+    "Glass_Pane_F1_W0": 0.8190120793612609,
+    "Glass_Pane_F1_W1": 0.5661030771982087,
+    "Glass_Pane_F1_W2": 0.11502224939699739,
+    "Glass_Pane_F1_W3": 0.36590959055438327,
+    "Glass_Pane_F1_W4": 0.509667219395561,
+    "Glass_Pane_F1_W5": 0.04881355425503151,
+    "Glass_Pane_F2_W0": 0.10980612347879443,
+    "Glass_Pane_F2_W1": 0.295084325381447,
+    "Glass_Pane_F2_W2": 0.41264670750646504,
+    "Glass_Pane_F2_W3": 0.2268581916746721,
+    "Glass_Pane_F2_W4": 0.8847292305431721,
+    "Glass_Pane_F2_W5": 0.25227027032904187,
+    "Glass_Pane_F3_W0": 0.17605586341070223,
+    "Glass_Pane_F3_W1": 0.5600756290472613,
+    "Glass_Pane_F3_W2": 0.37127617863903795,
+    "Glass_Pane_F3_W3": 0.19009890320136488,
+    "Glass_Pane_F3_W4": 0.15310706057410386,
+    "Glass_Pane_F3_W5": 0.6685110930044111,
+    "Glass_Pane_F4_W0": 0.24009413337549182,
+    "Glass_Pane_F4_W1": 0.3522584433488513,
+    "Glass_Pane_F4_W2": 0.006650728814005947,
+    "Glass_Pane_F4_W3": 0.4720666125130079,
+    "Glass_Pane_F4_W4": 0.7793616448554511,
+    "Glass_Pane_F4_W5": 0.7481602365131819
+  },
+  "outputs": {
+    "rgb": "dataset/images/scene_000045.png",
+    "glass_mask": "dataset/glass_masks/scene_000045.png",
+    "dirt_map": "dataset/dirt_maps/scene_000045.png"
+  }
+}
