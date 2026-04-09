@@ -1,0 +1,7 @@
+Blender 4.2.3 LTS (hash 0e22e4fcea03 built 2024-10-14 23:31:34)
+Traceback (most recent call last):
+  File "/home/azureuseram/AM1/blender/run_generation.py", line 22, in <module>
+    import yaml
+ModuleNotFoundError: No module named 'yaml'
+
+Blender quit
