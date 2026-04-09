@@ -247,7 +247,6 @@ class MaskExporter:
         world = bpy.context.scene.world
         if world is None:
             return None
-        orig = world.node_tree.nodes.copy() if (world.use_nodes and world.node_tree is not None) else None
         world.use_nodes = True
         nodes = world.node_tree.nodes
         links = world.node_tree.links
