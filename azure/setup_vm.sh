@@ -221,7 +221,9 @@ step "Installo numpy nel Python interno di Blender"
 # Blender 4.2 usa Python 3.11
 BLENDER_PY=$(find "$BLENDER_INSTALL_DIR" -name "python3*" -type f 2>/dev/null | grep bin | head -1 || true)
 if [ -n "$BLENDER_PY" ]; then
-    "$BLENDER_PY" -m pip install numpy scipy Pillow -q 2>/dev/null && ok "numpy installato in Blender Python" || warn "pip in Blender Python non disponibile (normale)"
+    "$BLENDER_PY" -m ensurepip -q 2>/dev/null || true
+    "$BLENDER_PY" -m pip install --upgrade pip -q 2>/dev/null || true
+    "$BLENDER_PY" -m pip install numpy scipy Pillow PyYAML -q 2>/dev/null && ok "pacchetti installati in Blender Python" || warn "pip in Blender Python non disponibile (normale)"
 fi
 
 # =============================================================================
