@@ -1,0 +1,111 @@
+# ============================================================
+# Dirt Estimation — Training Configuration
+# ============================================================
+
+experiment:
+  name: "dirt_estimation_v1"
+  project: "ai-glass-cleanliness"
+  tags: ["dirt", "regression", "heatmap"]
+  notes: "U-Net regression head for pixel-level dirt estimation"
+
+paths:
+  dataset_root: "dataset"
+  checkpoint_dir: "checkpoints/dirt_est"
+  log_dir: "logs/dirt_est"
+  output_dir: "outputs/dirt_est"
+
+dataset:
+  image_dir: "dataset/images"
+  glass_mask_dir: "dataset/glass_masks"
+  dirt_map_dir: "dataset/dirt_maps"
+  image_size: [512, 512]
+  use_masked_input: false          # if true, zero-out non-glass pixels before feeding
+  train_split: 0.80
+  val_split: 0.15
+  test_split: 0.05
+  num_workers: 4
+  pin_memory: true
+  prefetch_factor: 2
+
+augmentations:
+  train:
+    horizontal_flip: true
+    vertical_flip: false
+    random_rotate_90: true
+    random_brightness_contrast:
+      brightness_limit: 0.2
+      contrast_limit: 0.2
+      p: 0.6
+    gaussian_noise:
+      var_limit: [5.0, 30.0]
+      p: 0.3
+    motion_blur:
+      blur_limit: 5
+      p: 0.15
+    color_jitter:
+      brightness: 0.2
+      contrast: 0.2
+      saturation: 0.2
+      hue: 0.1
+      p: 0.5
+    normalize:
+      mean: [0.485, 0.456, 0.406]
+      std: [0.229, 0.224, 0.225]
+  val:
+    normalize:
+      mean: [0.485, 0.456, 0.406]
+      std: [0.229, 0.224, 0.225]
+
+model:
+  architecture: "unet"
+  encoder: "efficientnet-b4"       # deeper encoder for fine-grained regression
+  encoder_weights: "imagenet"
+  in_channels: 3
+  classes: 1
+  activation: "sigmoid"            # [0,1] output (dirt level)
+  decoder_channels: [256, 128, 64, 32, 16]
+  decoder_dropout: 0.3
+
+loss:
+  type: "combined_regression"      # mse | mae | ssim | combined_regression
+  mse_weight: 0.5
+  mae_weight: 0.3
+  ssim_weight: 0.2
+  ssim_window_size: 11
+  mask_loss: true                  # compute loss only on glass pixels
+
+optimizer:
+  type: "adamw"
+  lr: 5.0e-5
+  weight_decay: 1.0e-4
+  betas: [0.9, 0.999]
+  encoder_lr_multiplier: 0.05
+
+scheduler:
+  type: "cosine_warmup"
+  warmup_epochs: 5
+  T_max: 95
+  eta_min: 1.0e-8
+  patience: 15
+
+training:
+  epochs: 100
+  batch_size: 8
+  accumulate_grad_batches: 2
+  mixed_precision: true
+  gradient_clip_val: 1.0
+  early_stopping_patience: 25
+  early_stopping_metric: "val/mae"
+  early_stopping_mode: "min"
+  log_every_n_steps: 10
+  val_every_n_epochs: 1
+  save_top_k: 3
+
+metrics:
+  primary: "mae"
+  secondary: ["mse", "rmse", "ssim", "psnr"]
+
+inference:
+  smooth_output: true              # apply Gaussian blur to output heatmap
+  smooth_kernel_size: 5
+  smooth_sigma: 1.0

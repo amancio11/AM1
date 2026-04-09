@@ -1,0 +1,320 @@
+# ============================================================
+# Domain Adaptation Configuration
+# ============================================================
+# Reduces the synthetic-to-real domain gap by combining:
+#   - Aggressive domain randomization augmentations
+#   - Pseudo-labeling (self-training on real images)
+#   - CycleGAN-based style transfer (synthetic → real-looking)
+#   - Fine-tuning on small real datasets (50–500 images)
+# ============================================================
+
+experiment:
+  name: "domain_adaptation_v1"
+  project: "ai-glass-cleanliness"
+  tags: ["domain-adaptation", "pseudo-labeling", "fine-tuning"]
+  notes: "Adapt synthetic-pretrained model to real drone facade images"
+
+paths:
+  # Real image data
+  real_images_dir: "data/real/images"
+  real_glass_masks_dir: "data/real/glass_masks"    # optional — may be empty
+  real_dirt_maps_dir: "data/real/dirt_maps"         # optional — may be empty
+
+  # Synthetic dataset (used for style transfer training)
+  synthetic_images_dir: "dataset/images"
+  synthetic_glass_masks_dir: "dataset/glass_masks"
+  synthetic_dirt_maps_dir: "dataset/dirt_maps"
+
+  # Style-transferred synthetic images (output of CycleGAN)
+  stylized_images_dir: "dataset/stylized_images"
+
+  # Pseudo-labels output
+  pseudo_label_dir: "data/pseudo_labels"
+
+  # Checkpoints
+  pretrained_glass_ckpt: null                       # path to pretrained glass seg checkpoint
+  pretrained_dirt_ckpt: null                        # path to pretrained dirt est checkpoint
+  pretrained_multitask_ckpt: null                   # path to pretrained multitask checkpoint
+  cyclegan_checkpoint_dir: "checkpoints/cyclegan"
+  finetune_checkpoint_dir: "checkpoints/finetuned"
+  log_dir: "logs/domain_adaptation"
+  output_dir: "outputs/domain_adaptation"
+
+
+# ============================================================
+# Real Dataset
+# ============================================================
+real_dataset:
+  image_size: [512, 512]
+  has_glass_labels: false      # set true if you have real segmentation masks
+  has_dirt_labels: false       # set true if you have real dirt maps
+  train_split: 0.80
+  val_split: 0.20
+  num_workers: 4
+  pin_memory: true
+
+  # Acceptable image extensions in the real images directory
+  extensions: [".png", ".jpg", ".jpeg", ".JPG", ".PNG"]
+
+
+# ============================================================
+# Domain Randomization Augmentations
+# (applied on synthetic images to close the domain gap)
+# ============================================================
+domain_augmentations:
+  # Blur variants — simulate camera motion, focus issues
+  motion_blur:
+    enabled: true
+    blur_limit: [3, 15]
+    allow_shifted: true
+    p: 0.4
+
+  gaussian_blur:
+    enabled: true
+    blur_limit: [3, 9]
+    sigma_limit: [0.5, 3.0]
+    p: 0.3
+
+  defocus_blur:
+    enabled: true
+    radius: [1, 6]
+    alias_blur: 0.2
+    p: 0.2
+
+  # Glare & overexposure — simulate sun reflection on glass
+  sun_flare:
+    enabled: true
+    flare_roi: [0.0, 0.0, 1.0, 0.7]
+    angle_lower: 0.0
+    angle_upper: 1.0
+    num_flare_circles_lower: 2
+    num_flare_circles_upper: 8
+    src_radius: 200
+    p: 0.20
+
+  random_brightness:
+    enabled: true
+    brightness_limit: [-0.4, 0.5]   # allow overexposure
+    p: 0.6
+
+  random_gamma:
+    enabled: true
+    gamma_limit: [60, 140]
+    p: 0.3
+
+  clahe:
+    enabled: true
+    clip_limit: [1.0, 4.0]
+    p: 0.2
+
+  # Reflections — simulate partial mirror-like glass reflections
+  glass_reflection:
+    enabled: true
+    alpha_min: 0.05
+    alpha_max: 0.35
+    p: 0.30
+
+  # Rain / water drops on glass
+  rain_drops:
+    enabled: true
+    slant_lower: -10
+    slant_upper: 10
+    drop_length: 10
+    drop_width: 1
+    drop_color: [200, 200, 200]
+    blur_value: 3
+    brightness_coefficient: 0.9
+    rain_type: null
+    p: 0.15
+
+  # Noise variants
+  gaussian_noise:
+    enabled: true
+    var_limit: [10.0, 80.0]
+    mean: 0
+    per_channel: true
+    p: 0.35
+
+  iso_noise:
+    enabled: true
+    color_shift: [0.01, 0.05]
+    intensity: [0.1, 0.5]
+    p: 0.20
+
+  shot_noise:
+    enabled: true
+    scale_limit: [0.01, 0.10]
+    p: 0.15
+
+  jpeg_compression:
+    enabled: true
+    quality_lower: 50
+    quality_upper: 95
+    p: 0.30
+
+  # Color shifts — simulate different sensors, white balances
+  color_jitter:
+    enabled: true
+    brightness: 0.35
+    contrast: 0.35
+    saturation: 0.35
+    hue: 0.15
+    p: 0.60
+
+  rgb_shift:
+    enabled: true
+    r_shift_limit: 20
+    g_shift_limit: 20
+    b_shift_limit: 20
+    p: 0.25
+
+  hue_saturation_value:
+    enabled: true
+    hue_shift_limit: 25
+    sat_shift_limit: 40
+    val_shift_limit: 30
+    p: 0.40
+
+  channel_shuffle:
+    enabled: false
+    p: 0.05
+
+  # Normalization (ImageNet stats — keep consistent with backbone)
+  normalize:
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+
+
+# ============================================================
+# Style Transfer (CycleGAN)
+# ============================================================
+style_transfer:
+  enabled: true
+  method: "cyclegan"             # cyclegan | adain (future)
+
+  # Generator architecture
+  generator:
+    model: "resnet"              # resnet | unet
+    n_res_blocks: 9              # ResNet blocks in generator
+    ngf: 64                      # base feature maps
+    use_dropout: false
+    norm: "instance"             # instance | batch
+
+  # Discriminator (PatchGAN)
+  discriminator:
+    ndf: 64
+    n_layers: 3
+    norm: "instance"
+
+  # Loss weights
+  loss:
+    lambda_cycle: 10.0           # cycle consistency
+    lambda_identity: 5.0         # identity mapping
+    adversarial: "lsgan"         # lsgan | vanilla
+
+  # Training
+  training:
+    epochs: 50
+    batch_size: 4
+    lr_gen: 2.0e-4
+    lr_disc: 2.0e-4
+    betas: [0.5, 0.999]
+    lr_decay_start_epoch: 25     # begin linear LR decay
+    pool_size: 50                # replay buffer size
+    image_size: [256, 256]       # smaller size for style transfer training
+    num_workers: 4
+    save_every_n_epochs: 5
+    log_every_n_steps: 50
+
+
+# ============================================================
+# Pseudo-Labeling
+# ============================================================
+pseudo_labeling:
+  enabled: true
+
+  # Confidence thresholds for accepting pseudo-labels
+  glass_confidence_threshold: 0.85    # sigmoid prob must be > this to include pixel
+  dirt_confidence_low: 0.0            # include pixels with very low dirt (clean)
+  dirt_confidence_high: 0.90          # OR very high dirt (clearly dirty)
+
+  # Minimum glass coverage for an image to produce useful pseudo-labels
+  min_glass_coverage: 0.05            # at least 5% of image must be glass
+
+  # Entropy-based filtering: skip uncertain predictions
+  max_mean_entropy: 0.4               # images with high entropy are excluded
+
+  # Filtering strategy
+  filter_strategy: "confidence"       # confidence | entropy | combined
+
+  # How many pseudo-labeled images to generate per run
+  max_pseudo_images: 1000
+
+  # Ensemble: use multiple checkpoints for more robust pseudo-labels
+  use_ensemble: false
+  ensemble_checkpoints: []
+
+  # Re-generate pseudo-labels every N fine-tuning epochs
+  regenerate_every_n_epochs: 5
+
+
+# ============================================================
+# Fine-tuning
+# ============================================================
+finetuning:
+  enabled: true
+  model_type: "multitask"        # multitask | glass_only | dirt_only | glass+dirt
+
+  # Whether to mix synthetic + real data during fine-tuning
+  mix_synthetic: true
+  synthetic_ratio: 0.3           # fraction of batch from synthetic data
+
+  # Whether to add style-transferred synthetic images to training
+  use_stylized_synthetic: true
+  stylized_ratio: 0.2
+
+  # Freeze settings
+  freeze_encoder_epochs: 3       # freeze encoder for first N epochs (stabilize)
+  unfreeze_all_after: 3          # unfreeze everything after epoch N
+
+  # Training hyperparams (smaller LR than initial training)
+  epochs: 30
+  batch_size: 4
+  accumulate_grad_batches: 4     # effective batch = 16
+  mixed_precision: true
+  gradient_clip_val: 1.0
+
+  # Optimizer
+  optimizer:
+    type: "adamw"
+    lr: 5.0e-5                   # 10–20x lower than initial training
+    weight_decay: 1.0e-4
+    encoder_lr_multiplier: 0.01  # very low for frozen-style encoder training
+    betas: [0.9, 0.999]
+
+  # Scheduler
+  scheduler:
+    type: "cosine_warmup"
+    warmup_epochs: 2
+    T_max: 28
+    eta_min: 1.0e-7
+
+  # Loss — same as base model but with optional domain loss
+  loss:
+    seg_bce_weight: 0.4
+    seg_dice_weight: 0.4
+    seg_focal_weight: 0.2
+    seg_pos_weight: 2.0
+    reg_mse_weight: 0.5
+    reg_mae_weight: 0.3
+    reg_ssim_weight: 0.2
+    reg_mask_loss: true
+    task_balancing: "uncertainty"
+
+  # Early stopping
+  early_stopping_patience: 10
+  early_stopping_metric: "val/combined_score"
+  early_stopping_mode: "max"
+  save_top_k: 3
+  log_every_n_steps: 5
+  val_every_n_epochs: 1

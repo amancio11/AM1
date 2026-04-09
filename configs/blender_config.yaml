@@ -1,0 +1,119 @@
+# ============================================================
+# Blender Synthetic Data Generation — Configuration
+# ============================================================
+
+render:
+  engine: "CYCLES"                # CYCLES | EEVEE
+  device: "GPU"                   # GPU | CPU
+  samples: 128
+  resolution_x: 1280
+  resolution_y: 720
+  tile_size: 256
+  color_depth: 8                  # bits per channel
+  file_format: "PNG"
+  output_dir: "dataset"
+
+generation:
+  num_scenes: 2000                # total number of renders to produce
+  seed: 42                        # base random seed (incremented per scene)
+  workers: 1                      # Blender processes in parallel (usually 1 for GPU)
+
+building:
+  floors_min: 3
+  floors_max: 15
+  windows_per_floor_min: 3
+  windows_per_floor_max: 10
+  floor_height_min: 2.8           # meters
+  floor_height_max: 4.0
+  window_width_min: 0.8
+  window_width_max: 2.5
+  window_height_min: 1.0
+  window_height_max: 2.2
+  window_margin_min: 0.3
+  window_margin_max: 0.8
+  facade_width_min: 10.0
+  facade_width_max: 40.0
+  facade_materials:
+    - "concrete"
+    - "brick"
+    - "metal_panel"
+    - "stone"
+
+camera:
+  drone_altitude_min: 5.0         # meters above ground
+  drone_altitude_max: 80.0
+  distance_min: 5.0               # horizontal distance from facade
+  distance_max: 40.0
+  pitch_min: -30.0                # degrees (negative = looking up)
+  pitch_max: 10.0                 # degrees (positive = looking slightly down)
+  roll_max: 3.0                   # subtle roll variation
+  focal_length_min: 18.0          # mm equivalent
+  focal_length_max: 85.0
+  sensor_width: 35.0              # mm (full-frame equivalent)
+
+lighting:
+  sun_energy_min: 0.5
+  sun_energy_max: 8.0
+  sun_angle_min: 5.0              # degrees
+  sun_angle_max: 45.0
+  sky_turbidity_min: 1.5
+  sky_turbidity_max: 6.0
+  ambient_strength_min: 0.05
+  ambient_strength_max: 0.5
+  time_of_day_min: 6.0            # hours (6 = 6 AM)
+  time_of_day_max: 20.0           # hours (20 = 8 PM)
+  weather_conditions:
+    - name: "clear"
+      probability: 0.4
+    - name: "overcast"
+      probability: 0.2
+      sky_strength: 0.3
+    - name: "golden_hour"
+      probability: 0.15
+    - name: "harsh_noon"
+      probability: 0.15
+    - name: "foggy"
+      probability: 0.1
+      fog_density: 0.05
+
+glass:
+  ior_min: 1.45
+  ior_max: 1.55
+  roughness_min: 0.0
+  roughness_max: 0.08
+  tint_colors:
+    - [0.85, 0.92, 0.90]          # clear
+    - [0.70, 0.85, 0.80]          # slight teal
+    - [0.80, 0.80, 0.75]          # neutral grey
+    - [0.75, 0.90, 0.85]          # blue-green tint
+  reflection_probability: 0.7    # probability of adding env reflection
+  coating_probability: 0.3       # anti-reflective coating
+
+dirt:
+  enabled: true
+  density_min: 0.0                # 0 = perfectly clean
+  density_max: 0.9
+  pattern_types:
+    - "perlin"
+    - "voronoi"
+    - "streaks"
+    - "dust_spots"
+    - "water_stains"
+  streak_direction_range: 20.0    # degrees variation around vertical
+  texture_scale_min: 1.0
+  texture_scale_max: 8.0
+  color_range:
+    - [0.2, 0.18, 0.15]           # dark grime
+    - [0.6, 0.55, 0.45]           # dust
+    - [0.5, 0.48, 0.45]           # neutral dirt
+  dirt_roughness_boost: 0.4       # increase glass roughness where dirty
+
+export:
+  rgb_images: true
+  glass_masks: true
+  dirt_maps: true
+  metadata_json: true
+  depth_map: false                # optional
+  normal_map: false               # optional
+  separate_render_layers: true
+  mask_render_samples: 1          # fast render for masks (no AA needed)

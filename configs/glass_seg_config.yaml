@@ -1,0 +1,112 @@
+# ============================================================
+# Glass Surface Segmentation — Training Configuration
+# ============================================================
+
+experiment:
+  name: "glass_segmentation_v1"
+  project: "ai-glass-cleanliness"
+  tags: ["glass", "segmentation", "unet"]
+  notes: "Baseline U-Net with ResNet-50 backbone on synthetic data"
+
+paths:
+  dataset_root: "dataset"
+  checkpoint_dir: "checkpoints/glass_seg"
+  log_dir: "logs/glass_seg"
+  output_dir: "outputs/glass_seg"
+
+dataset:
+  image_dir: "dataset/images"
+  mask_dir: "dataset/glass_masks"
+  image_size: [512, 512]          # [H, W]
+  train_split: 0.80
+  val_split: 0.15
+  test_split: 0.05
+  num_workers: 4
+  pin_memory: true
+  prefetch_factor: 2
+
+augmentations:
+  train:
+    horizontal_flip: true
+    vertical_flip: false
+    random_rotate_90: true
+    random_brightness_contrast:
+      brightness_limit: 0.3
+      contrast_limit: 0.3
+      p: 0.7
+    gaussian_noise:
+      var_limit: [10.0, 50.0]
+      p: 0.3
+    motion_blur:
+      blur_limit: 7
+      p: 0.2
+    elastic_transform:
+      alpha: 120
+      sigma: 120
+      alpha_affine: 120
+      p: 0.2
+    grid_distortion:
+      p: 0.2
+    normalize:
+      mean: [0.485, 0.456, 0.406]
+      std: [0.229, 0.224, 0.225]
+  val:
+    normalize:
+      mean: [0.485, 0.456, 0.406]
+      std: [0.229, 0.224, 0.225]
+
+model:
+  architecture: "unet"             # unet | unetplusplus | deeplabv3plus | fpn
+  encoder: "resnet50"              # resnet50 | efficientnet-b4 | mit-b2
+  encoder_weights: "imagenet"
+  in_channels: 3
+  classes: 1
+  activation: null                 # null = raw logits (use with BCEWithLogitsLoss)
+  decoder_channels: [256, 128, 64, 32, 16]
+  decoder_dropout: 0.2
+
+loss:
+  type: "combined"                 # bce | dice | focal | combined
+  bce_weight: 0.4
+  dice_weight: 0.4
+  focal_weight: 0.2
+  focal_alpha: 0.25
+  focal_gamma: 2.0
+  pos_weight: 2.0                  # upweight glass pixels (often minority)
+
+optimizer:
+  type: "adamw"                    # adam | adamw | sgd
+  lr: 1.0e-4
+  weight_decay: 1.0e-4
+  betas: [0.9, 0.999]
+  encoder_lr_multiplier: 0.1      # lower LR for pretrained encoder
+
+scheduler:
+  type: "cosine_warmup"            # cosine_warmup | plateau | step
+  warmup_epochs: 5
+  T_max: 95
+  eta_min: 1.0e-7
+  patience: 10                     # for plateau
+
+training:
+  epochs: 100
+  batch_size: 8
+  accumulate_grad_batches: 2       # effective batch = 16
+  mixed_precision: true
+  gradient_clip_val: 1.0
+  early_stopping_patience: 20
+  early_stopping_metric: "val/iou"
+  early_stopping_mode: "max"
+  log_every_n_steps: 10
+  val_every_n_epochs: 1
+  save_top_k: 3
+
+metrics:
+  primary: "iou"
+  secondary: ["dice", "precision", "recall", "f1"]
+  threshold: 0.5
+
+inference:
+  threshold: 0.5
+  tta: false                       # test-time augmentation
+  tta_flips: ["horizontal", "vertical"]

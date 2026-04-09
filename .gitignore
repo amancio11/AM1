@@ -1,0 +1,80 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+
+# Dataset & Generated Files
+dataset/images/
+dataset/glass_masks/
+dataset/dirt_maps/
+dataset/metadata/
+!dataset/.gitkeep
+!dataset/images/.gitkeep
+!dataset/glass_masks/.gitkeep
+!dataset/dirt_maps/.gitkeep
+!dataset/metadata/.gitkeep
+
+# Azure credentials — MAI committare
+azure/vm_config.env
+
+# Model Checkpoints & Outputs
+checkpoints/
+outputs/
+runs/
+logs/
+*.pth
+*.pt
+*.ckpt
+*.h5
+
+# Blender Temp Files
+*.blend1
+*.blend2
+blender/renders/temp/
+
+# Environment & Secrets
+.env
+.env.local
+*.key
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+
+# Linting
+.flake8
+
+# Weights & Biases
+wandb/
