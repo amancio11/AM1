@@ -98,20 +98,18 @@ else
 fi
 
 # ---- Funzione di monitoraggio -----------------------------------------------
-cat << 'MONITOR'
-
-  Per monitorare il progresso in un altro terminale SSH:
-
-    # Numero immagini generate finora
-    ls ~/AI-CHALLENGE/dataset/images/*.png 2>/dev/null | wc -l
-
-    # Ultime righe del log
-    tail -f ~/AI-CHALLENGE/logs/generation_*.log | tail -1
-
-    # Spazio disco usato
-    du -sh ~/AI-CHALLENGE/dataset/
-
-MONITOR
+echo ""
+echo "  Per monitorare il progresso in un altro terminale SSH:"
+echo ""
+echo "    # Numero immagini generate finora"
+echo "    ls $PROJECT_DIR/dataset/images/*.png 2>/dev/null | wc -l"
+echo ""
+echo "    # Ultime righe del log"
+echo "    tail -f $LOG_FILE"
+echo ""
+echo "    # Spazio disco usato"
+echo "    du -sh $PROJECT_DIR/dataset/"
+echo ""
 
 # ---- Script di upload automatico su Azure Blob ------------------------------
 UPLOAD_SCRIPT="$PROJECT_DIR/azure/upload_dataset.sh"

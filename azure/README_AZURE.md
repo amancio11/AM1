@@ -40,7 +40,15 @@ Scarica zip <────────────── Download file
 1)Caricare .pem sul terminale azure
 2)Cercare ip:  curl ifconfig.me e configurarlo nel network come source adress ip
 3)chmod 400 /home/andrea/BOLOGNA-AI-AM-MACHINE_key.pem
-4)ssh -vvv -i /home/andrea/BOLOGNA-AI-AM-MACHINE_key.pem azureuseram@20.9.194.236
+4)ssh -i /home/andrea/BOLOGNA-AI-AM-MACHINE_key.pem azureuseram@20.9.194.236
+
+-SOLO PRIMA VOLTA:
+git clone https://github.com/amancio11/AM1.git
+bash azure/setup_vm.sh
+
+
+bash azure/run_generation.sh 0 50
+
 
 ### Via Azure Cloud Shell
 
