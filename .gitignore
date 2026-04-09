@@ -47,7 +47,6 @@ azure/vm_config.env
 checkpoints/
 outputs/
 runs/
-logs/
 *.pth
 *.pt
 *.ckpt
