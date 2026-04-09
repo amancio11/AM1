@@ -48,7 +48,7 @@ bash azure/setup_vm.sh
 
 
 bash azure/run_generation.sh 0 50
-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
+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
 
 
 ### Via Azure Cloud Shell
