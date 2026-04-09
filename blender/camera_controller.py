@@ -83,7 +83,7 @@ class CameraController:
         direction = (target - camera_obj.location).normalized()
 
         # Base rotation from direction
-        yaw = math.atan2(direction.x, -direction.y)        # rotation around Z
+        yaw = math.atan2(direction.x, direction.y)        # rotation around Z
         # Pitch override from config (allow looking up/down from direction)
         base_pitch = math.asin(direction.z)
         pitch_rad = base_pitch + math.radians(pitch_deg)
