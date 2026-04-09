@@ -2,7 +2,7 @@
   "scene_id": 2,
   "scene_name": "scene_000002",
   "seed": 44,
-  "render_time_s": 4.2,
+  "render_time_s": 25.74,
   "building": {
     "num_floors": 9,
     "windows_per_floor": 4,
@@ -384,7 +384,7 @@
     "camera_rotation_euler_deg": [
       68.65824337347135,
       -2.3210958831180735,
-      175.38223482611497
+      4.617765173885033
     ],
     "focal_length_mm": 31.37916433119164,
     "sensor_width_mm": 35.0,

@@ -1,0 +1,16 @@
+============================================================
+  AI Glass Cleanliness — Synthetic Data Generator
+============================================================
+Config:      /home/azureuseram/AM1/configs/blender_config.yaml
+Output:      dataset
+Scenes:      0 → 10 (10 total)
+Engine:      CYCLES / GPU
+Samples:     128
+Resolution:  1280x720
+
+============================================================
+  Done. Success: 0 | Failed: 0 | Skipped: 10
+============================================================
+Blender 4.2.3 LTS (hash 0e22e4fcea03 built 2024-10-14 23:31:34)
+
+Blender quit
