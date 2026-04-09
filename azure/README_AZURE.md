@@ -47,7 +47,7 @@ git clone https://github.com/amancio11/AM1.git
 bash azure/setup_vm.sh
 
 
-bash azure/run_generation.sh 0 50
+bash azure/run_generation.sh 0 10
 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
 
 
