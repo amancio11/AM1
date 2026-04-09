@@ -332,7 +332,7 @@ class DirtSimulator:
             )
             amplitude *= 0.5
             frequency *= 2.0
-        return (noise - noise.min()) / (noise.ptp() + 1e-8)
+        return (noise - noise.min()) / ((noise.max() - noise.min()) + 1e-8)
 
     def _np_voronoi_approx(self, img_w: int, img_h: int) -> np.ndarray:
         """Approximate Voronoi distance field."""
