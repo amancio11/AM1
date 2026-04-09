@@ -26,7 +26,15 @@ BLENDER_VERSION="4.2.3"          # LTS release — supporta HIP per AMD GPU
 BLENDER_ARCHIVE="blender-${BLENDER_VERSION}-linux-x64.tar.xz"
 BLENDER_URL="https://download.blender.org/release/Blender4.2/${BLENDER_ARCHIVE}"
 BLENDER_INSTALL_DIR="$HOME/blender"
-PROJECT_DIR="$HOME/AI-CHALLENGE"
+
+# Auto-detect project dir (supporta sia ~/AM1 che ~/AI-CHALLENGE)
+if [ -d "$HOME/AM1" ]; then
+    PROJECT_DIR="$HOME/AM1"
+elif [ -d "$HOME/AI-CHALLENGE" ]; then
+    PROJECT_DIR="$HOME/AI-CHALLENGE"
+else
+    PROJECT_DIR="$HOME/AI-CHALLENGE"  # default se nessuno esiste
+fi
 
 # Ubuntu 24.04 ha Python 3.12 come default; usiamo quello
 PYTHON_BIN="python3"
@@ -71,44 +79,52 @@ sudo apt-get install -y -qq \
 ok "Dipendenze di sistema installate"
 
 # =============================================================================
-# 3. GPU AMD — DRIVER ROCm (per PyTorch + Blender HIP)
+# 3. GPU — DRIVER (NVIDIA CUDA o AMD ROCm)
 # =============================================================================
-step "Verifico GPU AMD"
+step "Verifico GPU"
 
 GPU_INFO=$(lspci | grep -i "vga\|display\|3d" || true)
 echo "  GPU rilevata: $GPU_INFO"
 
-if echo "$GPU_INFO" | grep -qi "amd\|radeon\|advanced micro"; then
-    step "GPU AMD rilevata — installo ROCm 6.x per Ubuntu 24.04"
+GPU_TYPE="none"
+if echo "$GPU_INFO" | grep -qi "nvidia"; then
+    GPU_TYPE="nvidia"
+elif echo "$GPU_INFO" | grep -qi "amd\|radeon\|advanced micro"; then
+    GPU_TYPE="amd"
+fi
 
-    # Keyring ROCm
+if [ "$GPU_TYPE" = "nvidia" ]; then
+    step "GPU NVIDIA rilevata — installo driver CUDA"
+    sudo apt-get install -y -qq ubuntu-drivers-common
+    sudo ubuntu-drivers install --gpgpu 2>/dev/null || sudo ubuntu-drivers autoinstall 2>/dev/null || true
+    # Installa CUDA toolkit (per Blender + PyTorch)
+    wget -q https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb -O /tmp/cuda-keyring.deb
+    sudo dpkg -i /tmp/cuda-keyring.deb
+    sudo apt-get update -qq
+    sudo apt-get install -y -qq cuda-toolkit-12-4 2>/dev/null || warn "cuda-toolkit non installato (riprova dopo reboot)"
+    echo 'export PATH=/usr/local/cuda/bin:$PATH' >> ~/.bashrc
+    echo 'export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH' >> ~/.bashrc
+    ok "Driver NVIDIA installati — potrebbe servire reboot"
+    warn "Dopo il setup esegui: sudo reboot"
+elif [ "$GPU_TYPE" = "amd" ]; then
+    step "GPU AMD rilevata — installo ROCm 6.x per Ubuntu 24.04"
     wget -q https://repo.radeon.com/rocm/rocm.gpg.key -O - | \
         gpg --dearmor | sudo tee /etc/apt/keyrings/rocm.gpg > /dev/null
-
     echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/rocm.gpg] https://repo.radeon.com/rocm/apt/6.1 noble main" | \
         sudo tee /etc/apt/sources.list.d/rocm.list
-
-    # Repo amdgpu
     echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/rocm.gpg] https://repo.radeon.com/amdgpu/6.1/ubuntu noble main" | \
         sudo tee /etc/apt/sources.list.d/amdgpu.list
-
     sudo apt-get update -qq
     sudo apt-get install -y -qq rocm-hip-sdk rocm-opencl-runtime amdgpu-dkms
-
-    # PATH ROCm
     echo 'export PATH=/opt/rocm/bin:$PATH' >> ~/.bashrc
     echo 'export LD_LIBRARY_PATH=/opt/rocm/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
-    echo 'export HSA_OVERRIDE_GFX_VERSION=9.0.0' >> ~/.bashrc  # MI25 = gfx900
+    echo 'export HSA_OVERRIDE_GFX_VERSION=9.0.0' >> ~/.bashrc
     export PATH=/opt/rocm/bin:$PATH
-    export LD_LIBRARY_PATH=/opt/rocm/lib:$LD_LIBRARY_PATH
-
-    # Aggiungi utente al gruppo render/video per accesso GPU
     sudo usermod -aG render,video "$USER" 2>/dev/null || true
-
-    ok "ROCm installato — potrebbe servire reboot per attivare i driver"
+    ok "ROCm installato — potrebbe servire reboot"
     warn "Dopo il setup esegui: sudo reboot"
 else
-    warn "GPU AMD non rilevata — Blender userà CPU (rendering ~6× più lento)"
+    warn "Nessuna GPU rilevata — Blender userà CPU (rendering ~6× più lento)"
 fi
 
 # =============================================================================
@@ -167,8 +183,12 @@ fi
 source .venv/bin/activate
 pip install --upgrade pip setuptools wheel -q
 
-# Installa PyTorch con ROCm 6.1 per GPU AMD
-if lspci | grep -qi "amd\|radeon"; then
+# Installa PyTorch in base alla GPU rilevata
+if lspci | grep -qi "nvidia"; then
+    step "Installo PyTorch con supporto CUDA (GPU NVIDIA)"
+    pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124 -q
+    ok "PyTorch CUDA installato"
+elif lspci | grep -qi "amd\|radeon"; then
     step "Installo PyTorch con supporto ROCm 6.1 (GPU AMD)"
     pip install torch torchvision --index-url https://download.pytorch.org/whl/rocm6.1 -q
     ok "PyTorch ROCm installato"
@@ -214,7 +234,7 @@ echo "  Blender   : $(blender --version 2>/dev/null | head -1 || echo 'non dispo
 echo "  Python    : $($PYTHON_BIN --version)"
 source "$PROJECT_DIR/.venv/bin/activate" 2>/dev/null || true
 echo "  PyTorch   : $(python -c 'import torch; print(torch.__version__)' 2>/dev/null || echo 'non installato')"
-echo "  GPU AMD   : $(python -c 'import torch; print(torch.cuda.get_device_name(0))' 2>/dev/null || echo 'GPU non disponibile via Python (normale pre-reboot)')"
+echo "  GPU       : $(python -c 'import torch; print(torch.cuda.get_device_name(0)) if torch.cuda.is_available() else print(\"CPU only\")' 2>/dev/null || echo 'non disponibile via Python (normale pre-reboot)')"
 echo ""
 
 # =============================================================================
@@ -226,19 +246,19 @@ echo -e "${GREEN}  SETUP COMPLETATO!${NC}"
 echo "============================================================"
 echo ""
 echo "  VM          : BOLOGNA-AI-AM-MACHINE (Ubuntu 24.04)"
-echo "  GPU         : AMD Radeon Instinct MI25 (NV8as v4)"
+echo "  GPU         : $(lspci | grep -i 'vga|display|3d' | head -1 || echo 'non rilevata')"
 echo "  Progetto    : $PROJECT_DIR"
 echo ""
-echo "  SE HAI INSTALLATO ROCm → esegui ora: sudo reboot"
+echo "  SE HAI INSTALLATO driver GPU → esegui ora: sudo reboot"
 echo "  Dopo il reboot riconnettiti e poi:"
 echo ""
 echo "  GENERA IMMAGINI SINTETICHE:"
-echo "    bash ~/AI-CHALLENGE/azure/run_generation.sh 0 500"
+echo "    bash $PROJECT_DIR/azure/run_generation.sh 0 500"
 echo ""
 echo "  MONITORA:"
 echo "    tmux attach -t blender_gen"
-echo "    ls ~/AI-CHALLENGE/dataset/images/ | wc -l"
+echo "    ls $PROJECT_DIR/dataset/images/ | wc -l"
 echo ""
 echo "  SCARICA DATI (da Cloud Shell):"
-echo "    bash ~/AI-CHALLENGE/azure/upload_via_cloudshell.sh --download"
+echo "    bash $PROJECT_DIR/azure/upload_via_cloudshell.sh --download"
 echo "============================================================"
