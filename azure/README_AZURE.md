@@ -48,9 +48,6 @@ bash azure/setup_vm.sh
 
 
 bash azure/run_generation.sh 0 50
-
-scp azureuseram@20.9.194.236:/*.png .
-
 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
 
 
